@@ -1,103 +1,534 @@
+/* Variables globales pour une meilleure cohérence et maintenance */
+:root {
+  /* Couleurs principales */
+  --primary-color: #04f09af3;
+  --dark-color: #333;
+  --light-color: #f5f5f5;
+  --white: #ffffff;
+
+  /* Effets et animations */
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --transition: 0.3s ease;
+
+  /* Espacements standards */
+  --spacing-xs: 0.5rem;
+  --spacing-sm: 1rem;
+  --spacing-md: 2rem;
+  --spacing-lg: 4rem;
+}
+
+/* Reset global pour uniformiser l'affichage sur tous les navigateurs */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Styles de base pour le corps de la page */
 body {
+  font-family: "Roboto", system-ui, -apple-system, sans-serif;
+  line-height: 1.6;
+  background-color: var(--light-color);
+  color: var(--dark-color);
+  overflow-x: hidden;
+}
+
+/* Navigation principale */
+.topnav {
+  background-color: var(--dark-color);
+  position: sticky;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+  box-shadow: var(--shadow-sm);
   display: flex;
   justify-content: center;
-  align-items: center;
-  background-color: rgba(48, 59, 122, 0.351);
-  font-family: 'Roboto', sans-serif;
-  height: 100vh;
-}
-
-h1 {
-  color: rgba(148, 7, 7, 0.904);
-  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
-  font-size: 2.5rem;
-  line-height: 1.2;
-}
-
-label {
-  display: block;
-  font: 1rem 'Fira Sans', sans-serif;
-}
-
-input, label {
-  margin: 0.4rem 0;
-}
-
-label {
-  font-family: sans-serif;
-  font-size: 1rem;
-  padding-right: 10px;
-}
-
-select {
-  font-size: 0.9rem;
-  padding: 2px 5px;
-}
-
-table, caption, th, td {
-  border: 2px solid rgb(26, 60, 73);
-  border-collapse: collapse;
-}
-
-caption, th, td {
-  padding: 8px;
-}
-
-option {
-  font-weight: bolder;
-}
-
-.bold {
-  font-weight: bold;
-}
-
-.italic {
-  font-style: italic;
-}
-
-.bouton {
-  display: block;
-  background-color: #719fee;
-  border-radius: 10px;
-  border: 4px double #1f69ec;
-  color: #ffffff;
-  text-align: center;
-  font-size: 20px;
-  padding: 10px;
-  width: 200px;
-  cursor: pointer;
-}
-
-.bouton:focus {
-  outline: none;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-}
-
-p {
-  color: black;
-}
-
-.topnav {
-  background-color: #333;
-  overflow: hidden;
 }
 
 .topnav a {
-  float: left;
-  color: #f2f2f2;
+  color: var(--white);
   text-align: center;
-  padding: 14px 16px;
+  padding: var(--spacing-sm) var(--spacing-md);
   text-decoration: none;
-  font-size: 17px;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  font-size: 1.1rem;
+  transition: all var(--transition);
 }
 
 .topnav a:hover {
-  background-color: #ddd;
-  color: black;
+  background-color: var(--light-color);
+  color: var(--dark-color);
 }
 
 .topnav a.active {
+  background-color: var(--primary-color);
+  color: var(--white);
+}
+
+/* En-tête avec image de fond */
+.header-container {
+  width: 100%;
+  height: 600px;
+  position: relative;
+  overflow: hidden;
+  background-color: var(--dark-color);
+}
+
+.header-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  will-change: transform;
+  transition: transform var(--transition);
+
+  /* Amélioration de la netteté de l'image */
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  backface-visibility: hidden;
+}
+
+.header-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.5));
+  z-index: 1;
+}
+
+.main-title {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--white);
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: 700;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  z-index: 2;
+  text-align: center;
+  width: 100%;
+  padding: 0 var(--spacing-md);
+}
+
+/* Conteneur principal */
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-md);
+}
+
+/* Sections générales */
+.section {
+  margin: var(--spacing-lg) 0;
+  padding: var(--spacing-md);
+  background-color: var(--white);
+  border-radius: 8px;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Grille des caractéristiques */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--spacing-md);
+  margin: var(--spacing-lg) 0;
+}
+
+.feature-item {
+  padding: var(--spacing-md);
+  background-color: var(--white);
+  border-radius: 8px;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition);
+}
+
+.feature-item:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Statistiques */
+.stats-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--spacing-md);
+  margin: var(--spacing-md) 0;
+}
+
+.stat-item {
+  padding: var(--spacing-md);
+  text-align: center;
+  background-color: var(--white);
+  border-radius: 8px;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition);
+}
+
+.stat-item:hover {
+  transform: translateY(-5px);
+}
+
+.stat-number {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: var(--primary-color);
+  margin-bottom: var(--spacing-xs);
+}
+
+/* Grille des centres */
+.centers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--spacing-md);
+}
+
+.center-card {
+  padding: var(--spacing-md);
+  background-color: var(--white);
+  border-radius: 8px;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition);
+}
+
+.center-card:hover {
+  transform: translateX(10px);
+}
+
+/* Pied de page */
+.footer {
+  background-color: var(--dark-color);
+  color: var(--white);
+  padding: var(--spacing-lg) 0;
+  margin-top: var(--spacing-lg);
+}
+
+.footer-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--spacing-md);
+}
+
+.footer-section {
+  padding: var(--spacing-sm);
+}
+
+.footer-section a {
+  color: var(--white);
+  text-decoration: none;
+  display: block;
+  margin-bottom: var(--spacing-xs);
+  transition: color var(--transition);
+}
+
+.footer-section a:hover {
+  color: var(--primary-color);
+}
+
+/* Media Queries pour la responsivité */
+@media (max-width: 768px) {
+  .header-container {
+    height: 400px;
+  }
+
+  .main-title {
+    font-size: 2rem;
+  }
+
+  .container {
+    padding: 0 var(--spacing-sm);
+  }
+
+  .section {
+    padding: var(--spacing-sm);
+  }
+
+  .features-grid,
+  .stats-container,
+  .centers-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Support du mode sombre */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --light-color: #1a1a1a;
+    --dark-color: #f5f5f5;
+  }
+
+  .feature-item,
+  .stat-item,
+  .center-card {
+    background-color: #2a2a2a;
+    color: var(--white);
+  }
+
+  .section {
+    background-color: #2a2a2a;
+    color: var(--white);
+  }
+}
+
+/* Styles pour la page 404 */
+.error-container {
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 2rem;
+  background: linear-gradient(
+      rgba(255, 255, 255, 0.9),
+      rgba(255, 255, 255, 0.9)
+    ),
+    url("/assets/images/clinique_exterieur.jpeg") center/cover;
+}
+
+.error-code {
+  font-size: 8rem;
+  font-weight: 700;
+  color: #04f09af3;
+  margin: 0;
+  line-height: 1;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.error-message {
+  font-size: 2rem;
+  color: #333;
+  margin: 1rem 0 2rem;
+}
+
+.error-description {
+  color: #666;
+  margin-bottom: 2rem;
+  font-size: 1.1rem;
+}
+
+.home-button {
+  display: inline-block;
+  padding: 1rem 2rem;
   background-color: #04f09af3;
   color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+  font-weight: 500;
+}
+
+.home-button:hover {
+  background-color: #03d088;
+}
+
+/* Styles pour les formulaires */
+.form-container {
+  min-height: 80vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: var(--spacing-lg) var(--spacing-md);
+  background: linear-gradient(
+      rgba(255, 255, 255, 0.9),
+      rgba(255, 255, 255, 0.9)
+    ),
+    url("/assets/images/clinique_exterieur.jpeg") center/cover;
+}
+
+.form-box {
+  background: var(--white);
+  padding: var(--spacing-lg);
+  border-radius: 8px;
+  box-shadow: var(--shadow-md);
+  width: 100%;
+  max-width: 500px;
+}
+
+.form-box h1 {
+  color: var(--dark-color);
+  margin-bottom: var(--spacing-md);
+  text-align: center;
+  font-size: 2rem;
+}
+
+.registration-form .form-group {
+  margin-bottom: var(--spacing-md);
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: var(--spacing-xs);
+  color: var(--dark-color);
+  font-weight: 500;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: border-color var(--transition);
+}
+
+.form-group input:focus {
+  border-color: var(--primary-color);
+  outline: none;
+}
+
+.submit-button {
+  width: 100%;
+  padding: var(--spacing-sm);
+  background-color: var(--primary-color);
+  color: var(--white);
+  border: none;
+  border-radius: 4px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color var(--transition);
+}
+
+.submit-button:hover {
+  background-color: #03d088;
+}
+
+.form-footer {
+  margin-top: var(--spacing-md);
+  text-align: center;
+}
+
+.form-footer a {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.form-footer a:hover {
+  text-decoration: underline;
+}
+
+.alert {
+  padding: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
+  border-radius: 4px;
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.form-help {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+  color: #6c757d;
+}
+
+/* Style pour mettre en évidence les champs invalides */
+.form-group input:invalid {
+  border-color: #dc3545;
+}
+
+.form-group input:invalid:focus {
+  border-color: #dc3545;
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+/* Styles pour le dashboard */
+.dashboard-container {
+  padding: var(--spacing-md);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.dashboard-section {
+  background: var(--white);
+  border-radius: 8px;
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.quick-actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-md);
+}
+
+.action-card {
+  background: var(--white);
+  padding: var(--spacing-md);
+  border-radius: 8px;
+  box-shadow: var(--shadow-sm);
+  text-decoration: none;
+  color: var(--dark-color);
+  transition: transform var(--transition);
+}
+
+.action-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-md);
+}
+
+.action-card h3 {
+  color: var(--primary-color);
+  margin-bottom: var(--spacing-xs);
+}
+
+.btn-primary {
+  display: inline-block;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background: var(--primary-color);
+  color: var(--white);
+  text-decoration: none;
+  border-radius: 4px;
+  transition: background-color var(--transition);
+}
+
+.btn-primary:hover {
+  background-color: #03d088;
+}
+
+/* Styles pour le profil */
+.profile-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--spacing-md);
+  margin: var(--spacing-md) 0;
+}
+
+.profile-info {
+  background: var(--white);
+  padding: var(--spacing-md);
+  border-radius: 8px;
+  box-shadow: var(--shadow-sm);
+}
+
+.profile-info h2 {
+  color: var(--primary-color);
+  margin-bottom: var(--spacing-md);
+  font-size: 1.5rem;
+}
+
+.info-group {
+  margin-bottom: var(--spacing-sm);
+}
+
+.info-group label {
+  display: block;
+  font-weight: 500;
+  color: var(--dark-color);
+  margin-bottom: var(--spacing-xs);
+}
+
+.info-group p {
+  color: var(--dark-color);
+  padding: var(--spacing-xs) 0;
+  border-bottom: 1px solid #eee;
+}
+
+.profile-actions {
+  margin-top: var(--spacing-lg);
+  text-align: center;
 }

@@ -1,13 +1,15 @@
 <?php
 // src/Controllers/AuthController.php
 
+require_once __DIR__ . '/../Models/User.php';
+
 class AuthController
 {
-    private $pdo;
+    private $user;
 
     public function __construct(PDO $pdo)
     {
-        $this->pdo = $pdo;
+        $this->user = new User($pdo);
     }
 
     public function login()
@@ -18,18 +20,12 @@ class AuthController
 
         try {
             $email = filter_var($_POST['email'], FILTER_SANITIZE_EMAIL);
-            $password = $_POST['mdp'];
+            $password = $_POST['password'];
 
-            // Vérification des identifiants
-            $stmt = $this->pdo->prepare(
-                "SELECT idpatient, mdp, nom, prénom 
-                 FROM patient 
-                 WHERE email = ?"
-            );
-            $stmt->execute([$email]);
-            $user = $stmt->fetch();
+            // Utilisation du modèle User pour trouver l'utilisateur
+            $user = $this->user->findByEmail($email);
 
-            if ($user && password_verify($password, $user['mdp'])) {
+            if ($user && $this->user->validatePassword($password, $user['mdp'])) {
                 // Création de la session utilisateur
                 $_SESSION['user_id'] = $user['idpatient'];
                 $_SESSION['user_name'] = $user['nom'] . ' ' . $user['prénom'];
@@ -42,6 +38,7 @@ class AuthController
             }
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
+            $_SESSION['form_data'] = ['email' => $email];
             header('Location: /login');
             exit;
         }
@@ -54,76 +51,73 @@ class AuthController
         }
 
         try {
-            // Validation et nettoyage des données
-            $data = $this->validateRegistrationData($_POST);
+            // Nettoyage et validation des données
+            $data = [
+                'nom' => htmlspecialchars(trim($_POST['nom'])),
+                'prenom' => htmlspecialchars(trim($_POST['prenom'])),
+                'email' => filter_var(trim($_POST['email']), FILTER_SANITIZE_EMAIL),
+                'secu' => preg_replace('/\s+/', '', $_POST['secu']),
+                'password' => $_POST['password'],
+                'password_confirm' => $_POST['password_confirm']
+            ];
 
-            // Vérification de l'unicité de l'email
-            $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM patient WHERE email = ?");
-            $stmt->execute([$data['email']]);
+            $this->validateRegistrationData($data);
 
-            if ($stmt->fetchColumn() > 0) {
-                throw new Exception("Cette adresse email est déjà utilisée");
-            }
+            // Formatage du numéro de sécu
+            $data['secu'] = preg_replace(
+                '/(\d{1})(\d{2})(\d{2})(\d{2})(\d{3})(\d{3})(\d{2})/',
+                '$1 $2 $3 $4 $5 $6 $7',
+                $data['secu']
+            );
 
-            // Insertion du nouvel utilisateur
-            $sql = "INSERT INTO patient (nom, prénom, email, mdp, numerodesecuritesociale) 
-                    VALUES (?, ?, ?, ?, ?)";
+            // Hashage du mot de passe
+            $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
 
-            $stmt = $this->pdo->prepare($sql);
-            $success = $stmt->execute([
-                $data['nom'],
-                $data['prenom'],
-                $data['email'],
-                password_hash($data['mdp'], PASSWORD_DEFAULT),
-                $data['numero_securite']
-            ]);
-
-            if ($success) {
+            // Création de l'utilisateur
+            if ($this->user->create($data)) {
                 $_SESSION['message'] = "Inscription réussie ! Vous pouvez maintenant vous connecter.";
-                header('Location: /login');
+                header("Location: /login");
                 exit;
             }
+
+            throw new Exception("Erreur lors de l'inscription");
+
         } catch (Exception $e) {
             $_SESSION['error'] = $e->getMessage();
-            header('Location: /register');
+            $_SESSION['form_data'] = $_POST;
+            header("Location: /register");
             exit;
         }
     }
 
-    private function validateRegistrationData($data)
+    private function validateRegistrationData(array $data)
     {
-        $validated = [];
-
-        // Validation du nom
-        if (empty($data['nom'])) {
-            throw new Exception("Le nom est requis");
+        // Validation du numéro de sécu
+        if (!preg_match('/^[12]\d{14}$/', $data['secu'])) {
+            throw new Exception("Format du numéro de sécurité sociale invalide");
         }
-        $validated['nom'] = htmlspecialchars(trim($data['nom']));
 
-        // Validation du prénom
-        if (empty($data['prenom'])) {
-            throw new Exception("Le prénom est requis");
+        // Validation du mot de passe
+        if ($data['password'] !== $data['password_confirm']) {
+            throw new Exception("Les mots de passe ne correspondent pas");
         }
-        $validated['prenom'] = htmlspecialchars(trim($data['prenom']));
+
+        if (strlen($data['password']) < 8) {
+            throw new Exception("Le mot de passe doit contenir au moins 8 caractères");
+        }
+
+        if (!preg_match('/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*#?&]{8,}$/', $data['password'])) {
+            throw new Exception("Le mot de passe doit contenir au moins une lettre et un chiffre");
+        }
 
         // Validation de l'email
         if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
             throw new Exception("Format d'email invalide");
         }
-        $validated['email'] = $data['email'];
 
-        // Validation du numéro de sécurité sociale
-        if (!preg_match('/^[12][0-9]{14}$/', $data['numero_securite'])) {
-            throw new Exception("Format de numéro de sécurité sociale invalide");
+        // Vérification de l'unicité de l'email
+        if ($this->user->findByEmail($data['email'])) {
+            throw new Exception("Cette adresse email est déjà utilisée");
         }
-        $validated['numero_securite'] = $data['numero_securite'];
-
-        // Validation du mot de passe
-        if (strlen($data['mdp']) < 8) {
-            throw new Exception("Le mot de passe doit contenir au moins 8 caractères");
-        }
-        $validated['mdp'] = $data['mdp'];
-
-        return $validated;
     }
 }

@@ -1,11 +1,7 @@
 <?php
 session_start();
 
-// Configuration de la base de données
-$servername = "localhost";
-$username = "root";
-$password = "Lavoisier1";
-$dbname = "health_north";
+
 
 try {
     // Connexion à la base de données avec des options de sécurité renforcées

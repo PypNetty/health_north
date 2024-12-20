@@ -1,40 +1,79 @@
+<?php
+$title = 'Mon profil | Health North';
+$meta_description = 'Gérez vos informations personnelles Health North';
+$page = 'profile';
 
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>E5: Option " Solutions logicielles et Applications métiers
-   
-  </title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-  <link href="styles.css" rel="stylesheet">
-</head>
-<body>
-   <div class="container">
-<h1>DossierPatient</h1>
+ob_start(); ?>
 
-<h1>DOSSIERPATIENT</h1>
-<h3>Nom :</h3>
-<h3>Prénom :</h3>
-<h3>Photo</h3>
-<h3> Adresse du patient :</h3>  
-<h3> Date de naissance :</h3>   
-<h3> Sexe:</h3>
-<h3>Numero de sécurité sociale _ _ _ _ _ _ _ _ _ _ _ _ </h3>
-<h3>email</h3>
-<h3>téléphone</h3>
-<h3>Personne a contacter</h3>
-<h3>Médecin traitant</h3>
-<h3> Observations (Allergies,..)</h3>
+<div class="dashboard-container">
+    <div class="dashboard-section">
+        <h1>Mon Dossier Patient</h1>
 
+        <div class="profile-grid">
+            <div class="profile-info">
+                <h2>Informations personnelles</h2>
+                <div class="info-group">
+                    <label>Nom</label>
+                    <p><?= htmlspecialchars($user['nom']) ?></p>
+                </div>
+                <div class="info-group">
+                    <label>Prénom</label>
+                    <p><?= htmlspecialchars($user['prénom']) ?></p>
+                </div>
+                <div class="info-group">
+                    <label>Date de naissance</label>
+                    <p><?= htmlspecialchars($user['date_naissance'] ?? 'Non renseigné') ?></p>
+                </div>
+                <div class="info-group">
+                    <label>Sexe</label>
+                    <p><?= htmlspecialchars($user['sexe'] ?? 'Non renseigné') ?></p>
+                </div>
+            </div>
 
+            <div class="profile-info">
+                <h2>Coordonnées</h2>
+                <div class="info-group">
+                    <label>Adresse</label>
+                    <p><?= htmlspecialchars($user['adresse'] ?? 'Non renseigné') ?></p>
+                </div>
+                <div class="info-group">
+                    <label>Email</label>
+                    <p><?= htmlspecialchars($user['email']) ?></p>
+                </div>
+                <div class="info-group">
+                    <label>Téléphone</label>
+                    <p><?= htmlspecialchars($user['telephone'] ?? 'Non renseigné') ?></p>
+                </div>
+                <div class="info-group">
+                    <label>Numéro de sécurité sociale</label>
+                    <p><?= htmlspecialchars($user['numerodesecuritesociale']) ?></p>
+                </div>
+            </div>
 
+            <div class="profile-info">
+                <h2>Informations médicales</h2>
+                <div class="info-group">
+                    <label>Médecin traitant</label>
+                    <p><?= htmlspecialchars($user['medecin_traitant'] ?? 'Non renseigné') ?></p>
+                </div>
+                <div class="info-group">
+                    <label>Personne à contacter</label>
+                    <p><?= htmlspecialchars($user['contact_urgence'] ?? 'Non renseigné') ?></p>
+                </div>
+                <div class="info-group">
+                    <label>Observations (Allergies, etc.)</label>
+                    <p><?= htmlspecialchars($user['observations'] ?? 'Aucune observation') ?></p>
+                </div>
+            </div>
+        </div>
 
+        <div class="profile-actions">
+            <a href="/profile/edit" class="btn-primary">Modifier mes informations</a>
+        </div>
+    </div>
+</div>
 
-
-   </div>
-</body>
-</html>
-
- 
+<?php 
+$content = ob_get_clean();
+require_once VIEW_PATH . '/layout/auth_layout.php';
+?> 
