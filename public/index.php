@@ -5,7 +5,14 @@
  * Toutes les requêtes passent par ce fichier qui agit comme un "front controller"
  */
 
-// Démarrage de la session
+// Démarrage de la session avec des paramètres sécurisés
+session_set_cookie_params([
+  'lifetime' => 0,
+  'path' => '/',
+  'secure' => true,
+  'httponly' => true,
+  'samesite' => 'Strict',
+]);
 session_start();
 
 // Définition du chemin racine de l'application
@@ -24,11 +31,7 @@ if ($appConfig['env'] === 'development') {
 try {
   // Initialisation de la base de données
   $pdo = new PDO(
-    sprintf(
-      "mysql:host=%s;dbname=%s;charset=utf8mb4",
-      $dbConfig['host'],
-      $dbConfig['dbname']
-    ),
+    sprintf("mysql:host=%s;dbname=%s;charset=%s", $dbConfig['host'], $dbConfig['dbname'], $dbConfig['charset']),
     $dbConfig['username'],
     $dbConfig['password'],
     $dbConfig['options']
@@ -40,7 +43,7 @@ try {
   // Vérification de l'authentification pour les routes protégées
   if (in_array($requestUri, $appConfig['auth_routes']) && !isset($_SESSION['user_id'])) {
     $_SESSION['error'] = "Veuillez vous connecter pour accéder à cette page.";
-    header('Location: /login');
+    header('Location: ' . $appConfig['url'] . '/login');
     exit();
   }
 
@@ -62,7 +65,6 @@ try {
       require $appConfig['paths']['views'] . '/patient/profile.php';
       break;
 
-      // Traitement des formulaires
     case '/auth/login':
       if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         require $appConfig['paths']['controllers'] . '/AuthController.php';
@@ -78,7 +80,6 @@ try {
       break;
   }
 } catch (PDOException $e) {
-  // Journalisation de l'erreur de base de données
   error_log(sprintf(
     "[%s] Erreur BD : %s",
     date('Y-m-d H:i:s'),
@@ -88,7 +89,6 @@ try {
   $_SESSION['error'] = "Une erreur est survenue avec la base de données.";
   require $appConfig['paths']['views'] . '/errors/500.php';
 } catch (Exception $e) {
-  // Journalisation des autres erreurs
   error_log(sprintf(
     "[%s] Erreur : %s",
     date('Y-m-d H:i:s'),
