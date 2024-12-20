@@ -1,2 +1,34 @@
+# Environment variables
 .env
+
+# Dependencies
 /vendor/
+/node_modules/
+
+# IDE files
+.idea/
+.vscode/
+*.sublime-workspace
+*.sublime-project
+
+# Logs
+*.log
+/logs/
+
+# Cache
+/cache/
+
+# Uploaded files
+/public/uploads/
+
+# Configuration files with sensitive data
+/config/database.php
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
